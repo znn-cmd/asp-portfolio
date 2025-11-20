@@ -17,6 +17,14 @@ export async function POST(
     const userId = (session.user as any).id
     const candidate = await prisma.candidateProfile.findUnique({
       where: { userId },
+      include: {
+        user: {
+          select: {
+            name: true,
+            surname: true,
+          },
+        },
+      },
     })
 
     if (!candidate) {
@@ -25,6 +33,13 @@ export async function POST(
 
     const offer = await prisma.offer.findUnique({
       where: { id: params.offerId },
+      include: {
+        vacancy: {
+          select: {
+            title: true,
+          },
+        },
+      },
     })
 
     if (!offer || offer.candidateId !== candidate.id) {
