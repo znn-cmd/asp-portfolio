@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
-import { Zap, Edit, Trash2, CheckCircle2, XCircle } from "lucide-react"
+import { Zap, Edit, Trash2, CheckCircle2, XCircle, Plus } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
