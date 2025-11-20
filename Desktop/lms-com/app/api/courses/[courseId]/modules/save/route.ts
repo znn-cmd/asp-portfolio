@@ -32,12 +32,13 @@ export async function POST(
         // Create lessons for new module
         if (moduleData.lessons && moduleData.lessons.length > 0) {
           for (const lessonData of moduleData.lessons) {
+            const lessonType = (lessonData.type || lessonData.contentType || "TEXT") as any
             await prisma.lesson.create({
               data: {
                 title: lessonData.title,
                 description: lessonData.description || null,
                 content: lessonData.content || "",
-                type: (lessonData.type || lessonData.contentType || "TEXT") as any,
+                type: lessonType,
                 duration: lessonData.duration || 0,
                 order: lessonData.order || 0,
                 moduleId: newModule.id,
@@ -79,12 +80,13 @@ export async function POST(
           for (const lessonData of moduleData.lessons) {
             if (lessonData.id.startsWith("temp-lesson-")) {
               // Create new lesson
+              const lessonType = (lessonData.type || lessonData.contentType || "TEXT") as any
               await prisma.lesson.create({
                 data: {
                   title: lessonData.title,
                   description: lessonData.description || null,
                   content: lessonData.content || "",
-                  type: (lessonData.type || lessonData.contentType || "TEXT") as any,
+                  type: lessonType,
                   duration: lessonData.duration || 0,
                   order: lessonData.order || 0,
                   moduleId: moduleData.id,
@@ -92,13 +94,14 @@ export async function POST(
               })
             } else {
               // Update existing lesson
+              const lessonType = (lessonData.type || lessonData.contentType || "TEXT") as any
               await prisma.lesson.update({
                 where: { id: lessonData.id },
                 data: {
                   title: lessonData.title,
                   description: lessonData.description || null,
                   content: lessonData.content || "",
-                  type: (lessonData.type || lessonData.contentType || "TEXT") as any,
+                  type: lessonType,
                   duration: lessonData.duration || 0,
                   order: lessonData.order || 0,
                 },
