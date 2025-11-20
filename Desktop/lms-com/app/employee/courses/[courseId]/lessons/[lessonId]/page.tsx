@@ -39,10 +39,7 @@ export default function EmployeeLessonPage() {
         if (data.candidate) {
           setCandidateId(data.candidate.id)
           if (data.candidate.mentor) {
-            setMentor({
-              name: `${data.candidate.mentor.user.name} ${data.candidate.mentor.user.surname}`,
-              id: data.candidate.mentor.user.id,
-            })
+            setMentor(data.candidate.mentor)
           }
         }
       })
@@ -174,7 +171,7 @@ export default function EmployeeLessonPage() {
           </div>
         </main>
         {candidateId && mentor && (
-          <LessonChat candidateId={candidateId} mentorName={mentor.name} mentorId={mentor.id} />
+          <LessonChat candidateId={candidateId} mentor={mentor} />
         )}
       </div>
     </div>
