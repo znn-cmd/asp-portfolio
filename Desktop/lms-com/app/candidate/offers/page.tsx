@@ -54,7 +54,7 @@ export default async function CandidateOffers() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <CardTitle className="text-2xl">{offer.vacancy.title}</CardTitle>
+                        <CardTitle className="text-2xl">{offer.vacancy?.title || "Job Offer"}</CardTitle>
                         <CardDescription className="mt-2">
                           Offer sent on {new Date(offer.sentAt).toLocaleDateString()}
                         </CardDescription>

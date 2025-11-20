@@ -343,7 +343,7 @@ export default async function CandidateDetailPage({
                       <div key={offer.id} className="p-3 rounded border">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium">{offer.vacancy.title}</p>
+                            <p className="font-medium">{offer.vacancy?.title || "Job Offer"}</p>
                             <p className="text-sm text-muted-foreground">
                               Status: {offer.status} • Sent: {new Date(offer.sentAt).toLocaleDateString()}
                             </p>
