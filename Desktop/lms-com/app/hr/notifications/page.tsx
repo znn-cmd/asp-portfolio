@@ -6,13 +6,14 @@ import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Bell, CheckCircle2, Info, AlertTriangle, XCircle } from "lucide-react"
+import { Bell, CheckCircle2, Info, AlertTriangle, XCircle, Send } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
+import Link from "next/link"
 
 export default async function NotificationsPage() {
   const session = await getServerSession(authOptions)
   
-  if (!session) {
+  if (!session || !["HR", "ADMIN"].includes((session.user as any)?.role)) {
     redirect("/auth/signin")
   }
 
@@ -54,6 +55,12 @@ export default async function NotificationsPage() {
                   {unreadCount > 0 ? `${unreadCount} unread notifications` : "All caught up!"}
                 </p>
               </div>
+              <Link href="/hr/notifications/bulk">
+                <Button>
+                  <Send className="w-4 h-4 mr-2" />
+                  Send Bulk Notification
+                </Button>
+              </Link>
             </div>
 
             <div className="space-y-3">

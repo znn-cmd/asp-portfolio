@@ -467,8 +467,11 @@ HR Team`,
 
   console.log('✅ Offer templates created')
 
-  // Create General Offer for vacancy
-  const generalOffer = await prisma.offer.create({
+  // Create multiple General Offers (4 total)
+  const generalOffers = []
+  
+  // General Offer 1 - Real Estate Agent
+  const generalOffer1 = await prisma.offer.create({
     data: {
       type: 'general',
       vacancyId: vacancyRealtor.id,
@@ -505,24 +508,97 @@ HR Team`,
 С уважением,
 Команда HR`,
       status: 'sent',
-      sentAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
+      sentAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     },
   })
+  generalOffers.push(generalOffer1)
 
-  console.log('✅ General Offer created')
+  // General Offer 2 - Sales Intern
+  const generalOffer2 = await prisma.offer.create({
+    data: {
+      type: 'general',
+      vacancyId: vacancyIntern.id,
+      templateId: offerTemplate.id,
+      content: `Dear Candidate,
 
-  // Create candidates with General Offer responses (8-10 candidates)
+We are pleased to offer you the position of Sales Intern.
+
+This is an excellent opportunity to start your career in real estate sales.
+
+Terms:
+- Commission: 8%
+- Start date: Immediate
+- Location: Dubai
+
+Best regards,
+HR Team`,
+      status: 'sent',
+      sentAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
+    },
+  })
+  generalOffers.push(generalOffer2)
+
+  // General Offer 3 - Senior Real Estate Agent
+  const generalOffer3 = await prisma.offer.create({
+    data: {
+      type: 'general',
+      vacancyId: vacancyRealtor.id,
+      templateId: offerTemplate.id,
+      content: `Dear Candidate,
+
+We are pleased to offer you the position of Senior Real Estate Agent.
+
+Terms:
+- Commission: 12%
+- Start date: Flexible
+- Location: Dubai
+- Benefits: Health insurance, car allowance
+
+Best regards,
+HR Team`,
+      status: 'sent',
+      sentAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
+    },
+  })
+  generalOffers.push(generalOffer3)
+
+  // General Offer 4 - Real Estate Agent (Premium)
+  const generalOffer4 = await prisma.offer.create({
+    data: {
+      type: 'general',
+      vacancyId: vacancyRealtor.id,
+      testId: test1.id,
+      templateId: offerTemplate.id,
+      content: `Dear Candidate,
+
+We are pleased to offer you the position of Real Estate Agent (Premium Package).
+
+Terms:
+- Commission: 15%
+- Start date: Flexible
+- Location: Dubai
+- Benefits: Premium support, marketing budget
+
+Best regards,
+HR Team`,
+      status: 'sent',
+      sentAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+    },
+  })
+  generalOffers.push(generalOffer4)
+
+  console.log('✅ General Offers created')
+
+  // Create candidates with General Offer responses (8 candidates, 2 pending)
   const generalOfferCandidates = [
-    { name: 'Alex', surname: 'Petrov', email: 'alex.petrov@example.com', status: 'pending' },
-    { name: 'Maria', surname: 'Ivanova', email: 'maria.ivanova@example.com', status: 'pending' },
-    { name: 'Dmitry', surname: 'Sokolov', email: 'dmitry.sokolov@example.com', status: 'pending' },
-    { name: 'Elena', surname: 'Kozlova', email: 'elena.kozlova@example.com', status: 'pending' },
-    { name: 'Sergey', surname: 'Volkov', email: 'sergey.volkov@example.com', status: 'accepted' },
-    { name: 'Anna', surname: 'Morozova', email: 'anna.morozova@example.com', status: 'accepted' },
-    { name: 'Pavel', surname: 'Novikov', email: 'pavel.novikov@example.com', status: 'declined' },
-    { name: 'Olga', surname: 'Fedorova', email: 'olga.fedorova@example.com', status: 'declined' },
-    { name: 'Igor', surname: 'Medvedev', email: 'igor.medvedev@example.com', status: 'accepted' },
-    { name: 'Natalia', surname: 'Pavlova', email: 'natalia.pavlova@example.com', status: 'pending' },
+    { name: 'Alex', surname: 'Petrov', email: 'alex.petrov@example.com', status: 'pending', generalOffer: generalOffer1 },
+    { name: 'Maria', surname: 'Ivanova', email: 'maria.ivanova@example.com', status: 'pending', generalOffer: generalOffer1 },
+    { name: 'Dmitry', surname: 'Sokolov', email: 'dmitry.sokolov@example.com', status: 'accepted', generalOffer: generalOffer1 },
+    { name: 'Elena', surname: 'Kozlova', email: 'elena.kozlova@example.com', status: 'accepted', generalOffer: generalOffer2 },
+    { name: 'Sergey', surname: 'Volkov', email: 'sergey.volkov@example.com', status: 'declined', generalOffer: generalOffer2 },
+    { name: 'Anna', surname: 'Morozova', email: 'anna.morozova@example.com', status: 'accepted', generalOffer: generalOffer3 },
+    { name: 'Pavel', surname: 'Novikov', email: 'pavel.novikov@example.com', status: 'declined', generalOffer: generalOffer3 },
+    { name: 'Igor', surname: 'Medvedev', email: 'igor.medvedev@example.com', status: 'accepted', generalOffer: generalOffer4 },
   ]
 
   for (const candidateData of generalOfferCandidates) {
@@ -588,10 +664,10 @@ HR Team`,
         vacancyId: null,
         testId: null,
         templateId: offerTemplate.id,
-        content: generalOffer.content,
-        contentRu: generalOffer.contentRu,
+        content: candidateData.generalOffer.content,
+        contentRu: candidateData.generalOffer.contentRu || null,
         status: candidateData.status === 'pending' ? 'sent' : candidateData.status,
-        generalOfferId: generalOffer.id,
+        generalOfferId: candidateData.generalOffer.id,
         sentAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
         respondedAt: candidateData.status !== 'pending' 
           ? new Date(Date.now() - Math.random() * 5 * 24 * 60 * 60 * 1000)

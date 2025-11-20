@@ -18,6 +18,7 @@ import {
   Database,
   FileCheck,
   Bell,
+  Zap,
 } from "lucide-react"
 
 interface SidebarProps {
@@ -59,6 +60,7 @@ const hrLinks = [
   { href: "/hr/webinars", label: "Webinars", icon: Calendar },
   { href: "/hr/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/hr/notifications", label: "Notifications", icon: Bell },
+  { href: "/hr/automation", label: "Automation", icon: Zap },
   { href: "/hr/settings", label: "Settings", icon: Settings },
 ]
 
