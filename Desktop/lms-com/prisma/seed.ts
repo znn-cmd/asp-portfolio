@@ -722,13 +722,14 @@ HR Team`,
       }
 
       // Create test if needed
-      if (status === CandidateStatus.TEST_COMPLETED && testScore !== undefined) {
+      if (status === CandidateStatus.TEST_COMPLETED && testScore !== undefined && testScore !== null) {
+        const scoreValue = testScore
         const candidateTest = await prisma.candidateTest.create({
           data: {
             candidateId: profile.id,
             testId: test1.id,
             status: testStatus || 'completed',
-            score: testScore,
+            score: scoreValue,
             completedAt: testStatus === 'completed' ? new Date() : null,
             startedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
           },
@@ -744,8 +745,7 @@ HR Team`,
           let answerValue: any = null
           let isCorrect: boolean | null = null
           let points = 0
-          const score = testScore ?? 0
-          const passed = score >= test1.passingScore
+          const passed = scoreValue >= test1.passingScore
 
           if (question.type === QuestionType.SINGLE_CHOICE) {
             answerValue = passed ? question.correctAnswer : question.options[0]
