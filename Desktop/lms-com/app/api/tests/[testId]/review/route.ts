@@ -22,7 +22,15 @@ export async function POST(
     const candidateTest = await prisma.candidateTest.findUnique({
       where: { id: params.testId },
       include: {
-        candidate: true,
+        candidate: {
+          include: {
+            currentVacancy: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
         test: true,
         answers: {
           include: {
@@ -103,18 +111,11 @@ export async function POST(
       })
 
       // Check if there's an offer linked to this test
-      const candidate = await prisma.candidateProfile.findUnique({
-        where: { id: candidateTest.candidate.id },
-        include: {
-          currentVacancy: true,
-        },
-      })
-
-      const testOffer = candidate?.currentVacancy
+      const testOffer = candidateTest.candidate.currentVacancy
         ? await prisma.offer.findFirst({
             where: {
               testId: params.testId,
-              vacancyId: candidate.currentVacancy.id,
+              vacancyId: candidateTest.candidate.currentVacancy.id,
             },
           })
         : null

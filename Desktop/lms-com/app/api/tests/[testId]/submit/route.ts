@@ -18,6 +18,13 @@ export async function POST(
     const userId = (session.user as any).id
     const candidate = await prisma.candidateProfile.findUnique({
       where: { userId },
+      include: {
+        currentVacancy: {
+          select: {
+            id: true,
+          },
+        },
+      },
     })
 
     if (!candidate) {
