@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save } from "lucide-react"
 import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
+import { useSession } from "next-auth/react"
 
 const TRIGGER_EVENTS = [
   { value: "CANDIDATE_REGISTERED", label: "Candidate Registered" },
