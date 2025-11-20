@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import HrLayout from '@/components/HrLayout';
+import { useLocale } from '@/contexts/LocaleContext';
 
 interface Lesson {
   title: string;
@@ -19,6 +20,7 @@ interface Question {
 
 export default function NewCoursePage() {
   const router = useRouter();
+  const { t } = useLocale();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -48,7 +50,7 @@ export default function NewCoursePage() {
 
   const handleCreateCourse = async () => {
     if (!courseTitle || !courseDescription) {
-      setError('Заполните все поля');
+      setError(t('hr.createCourse.fillAllFields'));
       return;
     }
 
@@ -68,7 +70,7 @@ export default function NewCoursePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Ошибка создания курса');
+        setError(data.error || t('common.error'));
         setLoading(false);
         return;
       }
@@ -77,7 +79,7 @@ export default function NewCoursePage() {
       setStep(2);
       setLoading(false);
     } catch (err) {
-      setError('Произошла ошибка при создании курса');
+      setError(t('common.error'));
       setLoading(false);
     }
   };
@@ -107,7 +109,7 @@ export default function NewCoursePage() {
 
   const handleSaveLessons = async () => {
     if (lessons.some((l) => !l.title || !l.content)) {
-      setError('Заполните все поля уроков');
+      setError(t('hr.createCourse.fillAllFields'));
       return;
     }
 
@@ -123,7 +125,7 @@ export default function NewCoursePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        setError(data.error || 'Ошибка сохранения уроков');
+        setError(data.error || t('common.error'));
         setLoading(false);
         return;
       }
@@ -131,7 +133,7 @@ export default function NewCoursePage() {
       setStep(3);
       setLoading(false);
     } catch (err) {
-      setError('Произошла ошибка при сохранении уроков');
+      setError(t('common.error'));
       setLoading(false);
     }
   };
@@ -176,12 +178,12 @@ export default function NewCoursePage() {
 
   const handleSaveQuiz = async () => {
     if (!quizTitle || !quizDescription) {
-      setError('Заполните название и описание теста');
+      setError(t('hr.createCourse.fillAllFields'));
       return;
     }
 
     if (questions.some((q) => !q.text || q.options.some((o) => !o))) {
-      setError('Заполните все поля вопросов');
+      setError(t('hr.createCourse.fillAllFields'));
       return;
     }
 
@@ -201,14 +203,14 @@ export default function NewCoursePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        setError(data.error || 'Ошибка сохранения теста');
+        setError(data.error || t('common.error'));
         setLoading(false);
         return;
       }
 
       router.push('/hr/courses');
     } catch (err) {
-      setError('Произошла ошибка при сохранении теста');
+      setError(t('common.error'));
       setLoading(false);
     }
   };
@@ -217,7 +219,7 @@ export default function NewCoursePage() {
     <HrLayout>
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Создание нового курса</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('hr.createCourse.title')}</h1>
           <div className="mt-4 flex items-center space-x-4">
             <div
               className={`flex items-center ${
@@ -231,7 +233,7 @@ export default function NewCoursePage() {
               >
                 1
               </div>
-              <span className="ml-2">Информация о курсе</span>
+              <span className="ml-2">{t('hr.createCourse.step1')}</span>
             </div>
             <div className="w-12 h-0.5 bg-gray-300"></div>
             <div
@@ -246,7 +248,7 @@ export default function NewCoursePage() {
               >
                 2
               </div>
-              <span className="ml-2">Уроки</span>
+              <span className="ml-2">{t('hr.createCourse.step2')}</span>
             </div>
             <div className="w-12 h-0.5 bg-gray-300"></div>
             <div
@@ -261,7 +263,7 @@ export default function NewCoursePage() {
               >
                 3
               </div>
-              <span className="ml-2">Тест</span>
+              <span className="ml-2">{t('hr.createCourse.step3')}</span>
             </div>
           </div>
         </div>
@@ -274,29 +276,29 @@ export default function NewCoursePage() {
 
         {step === 1 && (
           <div className="bg-white rounded-lg shadow p-6 space-y-4">
-            <h2 className="text-xl font-semibold">Информация о курсе</h2>
+            <h2 className="text-xl font-semibold">{t('hr.createCourse.step1')}</h2>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Название курса
+                {t('hr.createCourse.courseTitle')}
               </label>
               <input
                 type="text"
                 value={courseTitle}
                 onChange={(e) => setCourseTitle(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Введите название курса"
+                placeholder={t('hr.createCourse.courseTitle')}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Описание курса
+                {t('hr.createCourse.courseDescription')}
               </label>
               <textarea
                 value={courseDescription}
                 onChange={(e) => setCourseDescription(e.target.value)}
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Введите описание курса"
+                placeholder={t('hr.createCourse.courseDescription')}
               />
             </div>
             <button
@@ -304,7 +306,7 @@ export default function NewCoursePage() {
               disabled={loading}
               className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
             >
-              {loading ? 'Создание...' : 'Создать курс и перейти к урокам'}
+              {loading ? t('hr.createCourse.creating') : t('hr.createCourse.createAndContinue')}
             </button>
           </div>
         )}
@@ -312,30 +314,30 @@ export default function NewCoursePage() {
         {step === 2 && (
           <div className="bg-white rounded-lg shadow p-6 space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Уроки курса</h2>
+              <h2 className="text-xl font-semibold">{t('hr.createCourse.step2')}</h2>
               <button
                 onClick={handleAddLesson}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
               >
-                Добавить урок
+                {t('hr.createCourse.addLesson')}
               </button>
             </div>
             {lessons.map((lesson, index) => (
               <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-medium">Урок {lesson.order}</h3>
+                  <h3 className="font-medium">{t('hr.createCourse.lessonNumber', { number: lesson.order })}</h3>
                   {lessons.length > 1 && (
                     <button
                       onClick={() => handleRemoveLesson(index)}
                       className="text-red-600 hover:text-red-800 text-sm"
                     >
-                      Удалить
+                      {t('common.delete')}
                     </button>
                   )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Название урока
+                    {t('hr.createCourse.lessonTitle')}
                   </label>
                   <input
                     type="text"
@@ -344,12 +346,12 @@ export default function NewCoursePage() {
                       handleUpdateLesson(index, 'title', e.target.value)
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Введите название урока"
+                    placeholder={t('hr.createCourse.lessonTitle')}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Содержание урока
+                    {t('hr.createCourse.lessonContent')}
                   </label>
                   <textarea
                     value={lesson.content}
@@ -358,7 +360,7 @@ export default function NewCoursePage() {
                     }
                     rows={6}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Введите содержание урока"
+                    placeholder={t('hr.createCourse.lessonContent')}
                   />
                 </div>
               </div>
@@ -368,65 +370,65 @@ export default function NewCoursePage() {
               disabled={loading}
               className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
             >
-              {loading ? 'Сохранение...' : 'Сохранить уроки и перейти к тесту'}
+              {loading ? t('hr.createCourse.saving') : t('hr.createCourse.saveAndContinue')}
             </button>
           </div>
         )}
 
         {step === 3 && (
           <div className="bg-white rounded-lg shadow p-6 space-y-4">
-            <h2 className="text-xl font-semibold">Создание теста</h2>
+            <h2 className="text-xl font-semibold">{t('hr.createCourse.step3')}</h2>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Название теста
+                {t('hr.createCourse.quizTitle')}
               </label>
               <input
                 type="text"
                 value={quizTitle}
                 onChange={(e) => setQuizTitle(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Введите название теста"
+                placeholder={t('hr.createCourse.quizTitle')}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Описание теста
+                {t('hr.createCourse.quizDescription')}
               </label>
               <textarea
                 value={quizDescription}
                 onChange={(e) => setQuizDescription(e.target.value)}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Введите описание теста"
+                placeholder={t('hr.createCourse.quizDescription')}
               />
             </div>
 
             <div className="flex justify-between items-center mt-6">
-              <h3 className="text-lg font-semibold">Вопросы</h3>
+              <h3 className="text-lg font-semibold">{t('hr.createCourse.questions')}</h3>
               <button
                 onClick={handleAddQuestion}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
               >
-                Добавить вопрос
+                {t('hr.createCourse.addQuestion')}
               </button>
             </div>
 
             {questions.map((question, qIndex) => (
               <div key={qIndex} className="border border-gray-200 rounded-lg p-4 space-y-3">
                 <div className="flex justify-between items-center">
-                  <h4 className="font-medium">Вопрос {qIndex + 1}</h4>
+                  <h4 className="font-medium">{t('hr.createCourse.questionNumber', { number: qIndex + 1 })}</h4>
                   {questions.length > 1 && (
                     <button
                       onClick={() => handleRemoveQuestion(qIndex)}
                       className="text-red-600 hover:text-red-800 text-sm"
                     >
-                      Удалить
+                      {t('common.delete')}
                     </button>
                   )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Текст вопроса
+                    {t('hr.createCourse.questionText')}
                   </label>
                   <input
                     type="text"
@@ -435,12 +437,12 @@ export default function NewCoursePage() {
                       handleUpdateQuestion(qIndex, 'text', e.target.value)
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Введите текст вопроса"
+                    placeholder={t('hr.createCourse.questionText')}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Варианты ответов
+                    {t('hr.createCourse.options')}
                   </label>
                   {question.options.map((option, oIndex) => (
                     <div key={oIndex} className="mb-2 flex items-center">
@@ -460,14 +462,32 @@ export default function NewCoursePage() {
                           handleUpdateQuestionOption(qIndex, oIndex, e.target.value)
                         }
                         className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder={`Вариант ${oIndex + 1}`}
+                        placeholder={t('hr.createCourse.option', { number: oIndex + 1 })}
                       />
                     </div>
                   ))}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Вес вопроса (баллы)
+                    {t('hr.createCourse.correctAnswer')}
+                  </label>
+                  <select
+                    value={question.correctOptionIndex}
+                    onChange={(e) =>
+                      handleUpdateQuestion(qIndex, 'correctOptionIndex', parseInt(e.target.value))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    {question.options.map((_, oIndex) => (
+                      <option key={oIndex} value={oIndex}>
+                        {t('hr.createCourse.option', { number: oIndex + 1 })}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('hr.createCourse.questionWeight')}
                   </label>
                   <input
                     type="number"
@@ -488,7 +508,7 @@ export default function NewCoursePage() {
               disabled={loading}
               className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
             >
-              {loading ? 'Сохранение...' : 'Сохранить тест и завершить'}
+              {loading ? t('hr.createCourse.saving') : t('hr.createCourse.saveAndFinish')}
             </button>
           </div>
         )}
