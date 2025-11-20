@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from '@/contexts/LocaleContext';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -25,7 +28,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Ошибка входа');
+        setError(data.error || t('auth.error'));
         setLoading(false);
         return;
       }
@@ -39,7 +42,7 @@ export default function LoginPage() {
         router.push('/');
       }
     } catch (err) {
-      setError('Произошла ошибка при входе');
+      setError(t('auth.error'));
       setLoading(false);
     }
   };
@@ -48,11 +51,14 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
         <div>
+          <div className="flex justify-end mb-4">
+            <LanguageSwitcher />
+          </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Вход в систему
+            {t('auth.title')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Учебная платформа для агентства недвижимости
+            {t('auth.subtitle')}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -72,7 +78,7 @@ export default function LoginPage() {
                 type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Имя пользователя"
+                placeholder={t('auth.username')}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -87,7 +93,7 @@ export default function LoginPage() {
                 type="password"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Пароль"
+                placeholder={t('auth.password')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -100,14 +106,14 @@ export default function LoginPage() {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
-              {loading ? 'Вход...' : 'Войти'}
+              {loading ? t('auth.loggingIn') : t('auth.loginButton')}
             </button>
           </div>
 
           <div className="text-sm text-gray-600 space-y-1">
-            <p><strong>Демо-аккаунты:</strong></p>
-            <p>Ученик: user / user</p>
-            <p>HR: hr / hr</p>
+            <p><strong>{t('auth.demoAccounts')}:</strong></p>
+            <p>{t('auth.studentAccount')}</p>
+            <p>{t('auth.hrAccount')}</p>
           </div>
         </form>
       </div>

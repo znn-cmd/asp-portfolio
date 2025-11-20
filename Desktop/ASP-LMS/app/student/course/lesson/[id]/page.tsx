@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import Link from 'next/link';
+import LessonPageContent from '@/components/LessonPageContent';
 
 async function getLessonData(userId: string, lessonId: string) {
   const user = await prisma.user.findUnique({
@@ -70,55 +70,7 @@ export default async function LessonPage({
 
   return (
     <StudentLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div>
-          <Link
-            href="/student/course"
-            className="text-indigo-600 hover:text-indigo-800 mb-4 inline-block"
-          >
-            ← Назад к списку уроков
-          </Link>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Урок {lesson.order}: {lesson.title}
-          </h1>
-          <div className="prose max-w-none mt-6">
-            <div className="whitespace-pre-line text-gray-700 leading-relaxed">
-              {lesson.content}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center bg-white rounded-lg shadow p-4">
-          {prevLesson ? (
-            <Link
-              href={`/student/course/lesson/${prevLesson.id}`}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-            >
-              ← Предыдущий урок
-            </Link>
-          ) : (
-            <div></div>
-          )}
-          {nextLesson ? (
-            <Link
-              href={`/student/course/lesson/${nextLesson.id}`}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-            >
-              Следующий урок →
-            </Link>
-          ) : (
-            <Link
-              href="/student/course"
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              Вернуться к курсу
-            </Link>
-          )}
-        </div>
-      </div>
+      <LessonPageContent lesson={lesson} prevLesson={prevLesson} nextLesson={nextLesson} />
     </StudentLayout>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StudentLayout from '@/components/StudentLayout';
+import { useLocale } from '@/contexts/LocaleContext';
 
 interface Question {
   id: string;
@@ -21,6 +22,7 @@ interface QuizData {
 
 export default function QuizPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const [quiz, setQuiz] = useState<QuizData | null>(null);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export default function QuizPage() {
         setLoading(false);
       })
       .catch(() => {
-        setError('Ошибка загрузки теста');
+        setError(t('common.error'));
         setLoading(false);
       });
   }, []);
@@ -71,14 +73,14 @@ export default function QuizPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Ошибка отправки ответов');
+        setError(data.error || t('common.error'));
         setSubmitting(false);
         return;
       }
 
       router.push('/student/result');
     } catch (err) {
-      setError('Произошла ошибка при отправке ответов');
+      setError(t('common.error'));
       setSubmitting(false);
     }
   };
@@ -87,7 +89,7 @@ export default function QuizPage() {
     return (
       <StudentLayout>
         <div className="text-center py-12">
-          <div className="text-lg">Загрузка теста...</div>
+          <div className="text-lg">{t('common.loading')}</div>
         </div>
       </StudentLayout>
     );
@@ -107,7 +109,7 @@ export default function QuizPage() {
     return (
       <StudentLayout>
         <div className="text-center py-12">
-          <div className="text-lg">Тест не найден</div>
+          <div className="text-lg">{t('common.error')}</div>
         </div>
       </StudentLayout>
     );
@@ -133,7 +135,7 @@ export default function QuizPage() {
           {quiz.questions.map((question, index) => (
             <div key={question.id} className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold mb-4">
-                Вопрос {index + 1}: {question.text}
+                {t('student.quiz.question', { number: index + 1 })}: {question.text}
               </h3>
               <div className="space-y-2">
                 {question.options.map((option, optionIndex) => (
@@ -161,7 +163,7 @@ export default function QuizPage() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex justify-between items-center">
               <p className="text-sm text-gray-600">
-                Отвечено: {Object.values(answers).filter((a) => a !== -1).length} из{' '}
+                {t('student.quiz.answered')}: {Object.values(answers).filter((a) => a !== -1).length} {t('student.quiz.of')}{' '}
                 {quiz.questions.length}
               </p>
               <button
@@ -169,7 +171,7 @@ export default function QuizPage() {
                 disabled={!allAnswered || submitting}
                 className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
-                {submitting ? 'Отправка...' : 'Отправить ответы'}
+                {submitting ? t('student.quiz.submitting') : t('student.quiz.submitAnswers')}
               </button>
             </div>
           </div>

@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useLocale } from '@/contexts/LocaleContext';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 interface HrLayoutProps {
   children: React.ReactNode;
@@ -10,6 +12,7 @@ interface HrLayoutProps {
 
 export default function HrLayout({ children }: HrLayoutProps) {
   const router = useRouter();
+  const { t } = useLocale();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +40,7 @@ export default function HrLayout({ children }: HrLayoutProps) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Загрузка...</div>
+        <div className="text-lg">{t('common.loading')}</div>
       </div>
     );
   }
@@ -49,30 +52,31 @@ export default function HrLayout({ children }: HrLayoutProps) {
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-8">
               <h1 className="text-xl font-semibold text-gray-900">
-                HR Панель
+                HR Panel
               </h1>
               <div className="flex space-x-4">
                 <Link
                   href="/hr"
                   className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Дашборд
+                  {t('hr.dashboard.title')}
                 </Link>
                 <Link
                   href="/hr/users"
                   className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Кандидаты
+                  {t('hr.users.title')}
                 </Link>
                 <Link
                   href="/hr/courses"
                   className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Курсы
+                  {t('hr.courses.title')}
                 </Link>
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <LanguageSwitcher />
               <span className="text-sm text-gray-700">
                 {user?.fullName || 'HR'}
               </span>
@@ -80,7 +84,7 @@ export default function HrLayout({ children }: HrLayoutProps) {
                 onClick={handleLogout}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
               >
-                Выйти
+                {t('common.logout')}
               </button>
             </div>
           </div>
