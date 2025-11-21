@@ -7,6 +7,8 @@ import { Header } from "@/components/layout/header"
 import { Card, CardContent } from "@/components/ui/card"
 import { Users } from "lucide-react"
 import Link from "next/link"
+import { getLocale } from "@/lib/get-locale"
+import { t } from "@/lib/i18n"
 
 export default async function MentorCandidatesPage() {
   const session = await getServerSession(authOptions)
@@ -15,6 +17,7 @@ export default async function MentorCandidatesPage() {
     redirect("/auth/signin")
   }
 
+  const locale = await getLocale()
   const userId = (session.user as any).id
   const candidates = await prisma.candidateProfile.findMany({
     where: { mentorId: userId },
