@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Bell, CheckCircle2, Info, AlertTriangle, XCircle, Send } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import Link from "next/link"
+import { getLocale } from "@/lib/get-locale"
+import { t } from "@/lib/i18n"
 
 export default async function NotificationsPage() {
   const session = await getServerSession(authOptions)
@@ -17,6 +19,7 @@ export default async function NotificationsPage() {
     redirect("/auth/signin")
   }
 
+  const locale = await getLocale()
   const userId = (session.user as any).id
   const role = (session.user as any).role
 
