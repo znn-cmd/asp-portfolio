@@ -265,7 +265,7 @@ export function PropertyForm({
     }
   };
 
-  const filteredAmenities = (category: typeof AMENITIES_BASIC, search: string) => {
+  const filteredAmenities = (category: readonly string[], search: string) => {
     if (!search) return category;
     return category.filter((a) =>
       a.toLowerCase().includes(search.toLowerCase())
