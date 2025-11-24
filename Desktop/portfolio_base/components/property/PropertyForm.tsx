@@ -346,7 +346,8 @@ export function PropertyForm({
               // For input fields, prevent default form submission
               if (target.tagName === 'INPUT') {
                 // Only allow Enter to submit if we're on the last step and clicking submit button
-                if (step < totalSteps || (e.target as HTMLElement).type !== 'submit') {
+                const inputElement = e.target as HTMLInputElement | HTMLButtonElement;
+                if (step < totalSteps || (inputElement.type && inputElement.type !== 'submit')) {
                   e.preventDefault();
                   // Don't auto-advance, let user explicitly click Next/Submit
                 }
