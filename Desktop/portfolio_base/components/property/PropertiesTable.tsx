@@ -104,7 +104,7 @@ export function PropertiesTable({
               </td>
               <td className="p-3">
                 <div className="text-sm font-medium">
-                  {property.hidePrice === true || property.hidePrice === 'TRUE'
+                  {property.hidePrice === true
                     ? "Hidden"
                     : property.totalPriceAed
                     ? formatCurrency(property.totalPriceAed)
