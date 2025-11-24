@@ -142,7 +142,7 @@ export function PropertyViewDialog({
               <div>
                 <Label className="text-sm text-muted-foreground">Price</Label>
                 <p className="font-medium">
-                  {property.hidePrice === true || property.hidePrice === 'TRUE'
+                  {property.hidePrice === true
                     ? "Hidden"
                     : property.totalPriceAed
                     ? formatCurrency(property.totalPriceAed)
