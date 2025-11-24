@@ -18,10 +18,25 @@ export async function getSheetsClient(): Promise<SheetsClient> {
 
   const sheetsId = process.env.GOOGLE_SHEETS_ID;
   const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY;
 
   if (!sheetsId || !serviceAccountEmail || !privateKey) {
-    throw new Error('Missing Google Sheets configuration. Please set GOOGLE_SHEETS_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL, and GOOGLE_PRIVATE_KEY environment variables.');
+    const missingVars = [];
+    if (!sheetsId) missingVars.push('GOOGLE_SHEETS_ID');
+    if (!serviceAccountEmail) missingVars.push('GOOGLE_SERVICE_ACCOUNT_EMAIL');
+    if (!privateKey) missingVars.push('GOOGLE_PRIVATE_KEY');
+    throw new Error(`Missing Google Sheets configuration. Missing: ${missingVars.join(', ')}`);
+  }
+
+  // Process private key: remove quotes, replace \n with actual newlines
+  privateKey = privateKey
+    .replace(/^["']|["']$/g, '') // Remove surrounding quotes
+    .replace(/\\n/g, '\n') // Replace \n with actual newlines
+    .trim();
+
+  if (!privateKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
+    console.error('GOOGLE_PRIVATE_KEY format error: Key should start with "-----BEGIN PRIVATE KEY-----"');
+    throw new Error('Invalid GOOGLE_PRIVATE_KEY format. Key must start with "-----BEGIN PRIVATE KEY-----"');
   }
 
   const auth = new google.auth.JWT({

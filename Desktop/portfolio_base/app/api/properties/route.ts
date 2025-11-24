@@ -129,8 +129,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ properties });
   } catch (error: any) {
     console.error('Error fetching properties:', error);
+    console.error('Error stack:', error.stack);
     return NextResponse.json(
-      { error: error.message || 'Failed to fetch properties' },
+      { 
+        error: error.message || 'Failed to fetch properties',
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
       { status: 500 }
     );
   }
